@@ -8,24 +8,15 @@
       "phone": "555-0199",
       "dob": "1995-06-15",
       "acctNum": "4892019283",
-      "checking_bal": "2450.50",
-      "savings_bal": "12500.00",
+      "checking_bal": "0.00",
+      "savings_bal": "0.00",
       "status": "Active",
-      "transactions": [
-        {
-          "type": "Debit",
-          "from": "Checking",
-          "to": "Other Bank",
-          "amount": "150.00",
-          "ref": "US94827102",
-          "date": "Nov 13, 2026"
-        }
-      ]
+      "transactions": []
     }
   },
   "settings": {
     "auth_enabled": false,
     "auth_code": "9999",
-    "auth_name": "AUTHORIZATION CODE"
+    "auth_name": "IMF CODE"
   }
 }
