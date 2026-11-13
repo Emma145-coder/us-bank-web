@@ -33,7 +33,7 @@ function writeData(data) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// Helper function to assign index-based account numbers and sanitize transactions (prevents 'undefined')
+// Helper function to assign index-based account numbers and fully sanitize transactions
 function sanitizeUserData(db) {
     if (!db || !db.users) return;
     let index = 1;
@@ -49,11 +49,15 @@ function sanitizeUserData(db) {
             user.savings_account_number = '807470' + paddedIndex;
         }
 
-        // Sanitize transactions to wipe out any 'undefined' or missing fields
+        // Fully sanitize every transaction to eliminate all 'undefined' values across all templates
         if (user.transactions && Array.isArray(user.transactions)) {
             user.transactions = user.transactions.map(tx => {
-                const desc = tx.merchant || tx.description || tx.title || 'Transaction';
+                const desc = tx.merchant || tx.description || tx.title || tx.name || 'ONLINE TRANSACTION';
                 const type = tx.type || 'Credit';
+                const subCat = tx.category || tx.subtext || (type === 'Credit' ? 'ACH Credit / Deposit' : 'Retail Purchase / Transfer');
+                const source = tx.from || tx.source || tx.sender || 'U.S. Bank Checking';
+                const reference = tx.ref || tx.reference || tx.transactionId || ('REF-' + Math.floor(10000000 + Math.random() * 90000000));
+                
                 return {
                     id: tx.id || ('TXN-' + Math.floor(100000 + Math.random() * 900000)),
                     type: type,
@@ -61,9 +65,14 @@ function sanitizeUserData(db) {
                     description: desc,
                     title: desc.toUpperCase(),
                     merchant: desc.toUpperCase(),
-                    subtext: tx.subtext || (type === 'Credit' ? 'ACH Credit / Deposit' : 'Retail Purchase / Transfer'),
-                    from: tx.from || 'U.S. Bank Checking',
-                    ref: tx.ref || ('REF-' + Math.floor(10000000 + Math.random() * 90000000)),
+                    name: desc.toUpperCase(),
+                    subtext: subCat,
+                    category: subCat,
+                    from: source,
+                    source: source,
+                    sender: source,
+                    ref: reference,
+                    reference: reference,
                     date: tx.date || new Date().toLocaleString(),
                     account: tx.account || 'checking'
                 };
