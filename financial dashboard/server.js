@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Path to users.json in your root folder
 const DATA_FILE = path.join(__dirname, 'users.json');
 
-// Helper function to read database
+// Helper function to read database safely
 function readData() {
     if (!fs.existsSync(DATA_FILE)) {
         return { 
@@ -18,7 +18,14 @@ function readData() {
             settings: { auth_enabled: false, auth_code: "9999", auth_name: "IMF CODE" } 
         };
     }
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    try {
+        return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    } catch (e) {
+        return { 
+            users: {}, 
+            settings: { auth_enabled: false, auth_code: "9999", auth_name: "IMF CODE" } 
+        };
+    }
 }
 
 // Helper function to write database
@@ -26,17 +33,41 @@ function writeData(data) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// Helper function to auto-assign 10-digit account numbers ending with sequential index if missing
-function ensureAccountNumbers(db) {
+// Helper function to assign index-based account numbers and sanitize transactions (prevents 'undefined')
+function sanitizeUserData(db) {
+    if (!db || !db.users) return;
     let index = 1;
     for (let username in db.users) {
         const user = db.users[username];
         const paddedIndex = String(index).padStart(4, '0');
+        
+        // Assign index-based account numbers if missing
         if (!user.account_number) {
             user.account_number = '471865' + paddedIndex;
         }
         if (!user.savings_account_number) {
             user.savings_account_number = '807470' + paddedIndex;
+        }
+
+        // Sanitize transactions to wipe out any 'undefined' or missing fields
+        if (user.transactions && Array.isArray(user.transactions)) {
+            user.transactions = user.transactions.map(tx => {
+                const desc = tx.merchant || tx.description || tx.title || 'Transaction';
+                const type = tx.type || 'Credit';
+                return {
+                    id: tx.id || ('TXN-' + Math.floor(100000 + Math.random() * 900000)),
+                    type: type,
+                    amount: tx.amount ? parseFloat(tx.amount).toFixed(2) : '0.00',
+                    description: desc,
+                    title: desc.toUpperCase(),
+                    merchant: desc.toUpperCase(),
+                    subtext: tx.subtext || (type === 'Credit' ? 'ACH Credit / Deposit' : 'Retail Purchase / Transfer'),
+                    from: tx.from || 'U.S. Bank Checking',
+                    ref: tx.ref || ('REF-' + Math.floor(10000000 + Math.random() * 90000000)),
+                    date: tx.date || new Date().toLocaleString(),
+                    account: tx.account || 'checking'
+                };
+            });
         }
         index++;
     }
@@ -45,7 +76,7 @@ function ensureAccountNumbers(db) {
 // API: Get all users and global settings
 app.get('/api/data', (req, res) => {
     const db = readData();
-    ensureAccountNumbers(db);
+    sanitizeUserData(db);
     res.json(db);
 });
 
@@ -53,18 +84,7 @@ app.get('/api/data', (req, res) => {
 app.post('/api/data', (req, res) => {
     const db = req.body;
     if (db && db.users) {
-        let index = 1;
-        for (let username in db.users) {
-            const user = db.users[username];
-            const paddedIndex = String(index).padStart(4, '0');
-            if (!user.account_number) {
-                user.account_number = '471865' + paddedIndex;
-            }
-            if (!user.savings_account_number) {
-                user.savings_account_number = '807470' + paddedIndex;
-            }
-            index++;
-        }
+        sanitizeUserData(db);
     }
     writeData(db);
     res.json({ success: true });
@@ -73,23 +93,8 @@ app.post('/api/data', (req, res) => {
 // API: Backward compatibility for user-only updates (signup and transfers)
 app.post('/api/users', (req, res) => {
     const db = readData();
-    const incomingUsers = req.body;
-    let index = 1;
-    for (let username in incomingUsers) {
-        const user = incomingUsers[username];
-        const paddedIndex = String(index).padStart(4, '0');
-        
-        // Preserve existing account numbers if they already exist, otherwise assign index-based ones
-        if (db.users[username] && db.users[username].account_number) {
-            user.account_number = db.users[username].account_number;
-            user.savings_account_number = db.users[username].savings_account_number || ('807470' + paddedIndex);
-        } else {
-            if (!user.account_number) user.account_number = '471865' + paddedIndex;
-            if (!user.savings_account_number) user.savings_account_number = '807470' + paddedIndex;
-        }
-        index++;
-    }
-    db.users = incomingUsers;
+    db.users = req.body;
+    sanitizeUserData(db);
     writeData(db);
     res.json({ success: true });
 });
@@ -131,6 +136,7 @@ app.post('/api/signup', (req, res) => {
         transactions: []
     };
 
+    sanitizeUserData(db);
     writeData(db);
     res.json({ success: true, account_number: checkingAcctNum });
 });
