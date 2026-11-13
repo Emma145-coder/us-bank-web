@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>US Banking - Create Account</title>
+    <style>
+        :root { 
+            --usbank-red: #c8202e; --usbank-blue: #002d72; --action-blue: #1f5dc1; --bg-gray: #f4f5f8; 
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--bg-gray); display: flex; flex-direction: column; min-height: 100vh; }
+        
+        .login-header { display: flex; align-items: center; padding: 16px; background-color: #ffffff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; width: 100%; box-sizing: border-box; }
+        .back-btn { background: none; border: none; font-size: 24px; color: #333; cursor: pointer; margin-right: 16px; text-decoration: none; }
+        .logo img { height: 32px; width: auto; display: block; mix-blend-mode: multiply; }
+        
+        .form-container { padding: 24px; background-color: #ffffff; flex: 1; width: 100%; max-width: 500px; margin: 20px auto; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); box-sizing: border-box; }
+        
+        .form-title { color: var(--usbank-blue); font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+        
+        .form-group { margin-bottom: 16px; position: relative; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; box-sizing: border-box; background-color: #fafafa; }
+        .form-group input:focus { outline: none; border-color: var(--action-blue); background-color: #fff; }
+        
+        /* SHOW/HIDE TOGGLE FOR PASSWORD */
+        .show-toggle { position: absolute; right: 12px; top: 38px; font-size: 14px; color: #555; cursor: pointer; font-weight: 500; }
+        
+        .submit-btn { background-color: var(--action-blue); color: #ffffff; border: none; padding: 16px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; }
+        .error-msg { color: #c8202e; font-size: 14px; margin-bottom: 16px; display: none; }
+    </style>
+</head>
+<body>
+
+    <header class="login-header">
+        <a href="login.html" class="back-btn">&#8592;</a>
+        <div class="logo"><img src="https://i.ibb.co/Sw4RPZt4/IMG-7257.jpg" alt="US Banking"></div>
+    </header>
+
+    <div class="form-container">
+        <h2 class="form-title">Create an account</h2>
+        <div id="errorMsg" class="error-msg">Username already exists.</div>
+        
+        <form id="signup-form" onsubmit="handleSignup(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="reg-name" required>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="reg-username" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="reg-email" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="reg-phone" required>
+            </div>
+            <div class="form-group">
+                <label>Driver's License Number</label>
+                <input type="text" id="reg-license" required>
+            </div>
+            <div class="form-group">
+                <label>Social Security Number</label>
+                <input type="text" id="reg-ssn" required>
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="reg-dob" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-pass" required>
+                <span class="show-toggle" onclick="togglePassword('reg-pass', this)">Show</span>
+            </div>
+            <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+    </div>
+
+    <script>
+        // PASSWORD TOGGLE FUNCTION
+        function togglePassword(inputId, el) {
+            var input = document.getElementById(inputId);
+            if (input.type === "password") { 
+                input.type = "text"; 
+                el.textContent = "Hide"; 
+            } else { 
+                input.type = "password"; 
+                el.textContent = "Show"; 
+            }
+        }
+
+        // SIGNUP HANDLER
+        async function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const username = document.getElementById('reg-username').value.trim().toLowerCase();
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+            const license = document.getElementById('reg-license').value;
+            const ssn = document.getElementById('reg-ssn').value;
+            const dob = document.getElementById('reg-dob').value;
+            const password = document.getElementById('reg-pass').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            errorMsg.style.display = 'none';
+
+            try {
+                // Fetch current user database from backend
+                const res = await fetch('/api/data');
+                const data = await res.json();
+                let users = data.users || {};
+
+                if (users[username]) {
+                    errorMsg.textContent = "Username already exists.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+
+                // Generate random account number
+                const acctNum = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+                // Create user object matching your backend requirements
+                users[username] = {
+                    name: name,
+                    username: username,
+                    password: password,
+                    email: email,
+                    phone: phone,
+                    license: license,
+                    ssn: ssn,
+                    dob: dob,
+                    acctNum: acctNum,
+                    checking_bal: "0.00",
+                    savings_bal: "0.00",
+                    status: "Active",
+                    transactions: []
+                };
+
+                // Send updated users object to Express backend server
+                const saveRes = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(users)
+                });
+
+                if (saveRes.ok) {
+                    alert('Account successfully created! You can now log in.');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Error saving account data to server.');
+                }
+            } catch (err) {
+                console.error("Signup error:", err);
+                alert("Server connection error during registration.");
+            }
+        }
+    </script>
+</body>
+</html>
