@@ -67,3 +67,555 @@
         /* TRANSFER FORMS */
         .form-page { background-color: #ffffff; flex: 1; display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 180px; width: 100%; }
         .form-page-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; position: sticky; top: 0; background-color: #fff; z-index: 50; width: 100%; box-sizing: border-box; }
+        .form-page-header img { height: 24px; margin-right: auto; mix-blend-mode: multiply; }
+        .form-page-title { font-size: 18px; font-weight: 600; color: var(--usbank-blue); margin-left: 10px; }
+        .form-body { padding: 24px; width: 100%; box-sizing: border-box; }
+        .form-section-title { font-size: 14px; font-weight: 700; color: var(--usbank-blue); margin: 20px 0 12px 0; padding-bottom: 4px; border-bottom: 1px solid #eee; }
+        .form-section-title:first-child { margin-top: 0; }
+        .input-field { margin-bottom: 16px; }
+        .input-field label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; text-transform: uppercase; }
+        .input-field input, .input-field select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; background-color: #fafafa; box-sizing: border-box; }
+        .input-field input:focus, .input-field select:focus { outline: none; border-color: var(--action-blue); background-color: #fff; }
+        .account-select { width: 100%; padding: 14px; border: 1px solid #dcdcdc; border-radius: 8px; font-size: 16px; background-color: #f0f2f5; color: #1f5dc1; font-weight: 600; appearance: none; box-sizing: border-box; }
+        .submit-btn { background-color: var(--action-blue); color: #ffffff; border: none; padding: 16px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; }
+
+        /* PRECISE REFERENCE MATCHING MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .modal-box { background-color: #ffffff; width: 100%; max-width: 380px; border-radius: 24px; padding: 36px 28px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box; }
+        
+        .receipt-logo { height: 35px; margin: 0 auto 16px auto; display: block; mix-blend-mode: multiply; }
+        .success-check { width: 60px; height: 60px; background-color: #e8f5e9; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 16px auto; }
+        .success-check svg { width: 30px; height: 30px; fill: #2e7d32; }
+        .modal-title { font-size: 20px; font-weight: 700; color: #333; margin-bottom: 4px; }
+        .modal-amount { font-size: 36px; font-weight: 700; color: var(--usbank-blue); margin-bottom: 24px; }
+        .modal-details { text-align: left; background-color: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+        .modal-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+        .modal-row span:first-child { color: #666; }
+        .modal-row span:last-child { font-weight: 600; color: #333; text-align: right; max-width: 60%; }
+        
+        /* IMF CODE / VERIFY TRANSACTION MODAL (Matching Reference Image 2) */
+        #imf-modal .auth-lock-icon { width: 52px; height: 52px; margin: 0 auto 18px auto; }
+        #imf-modal .auth-lock-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--usbank-red); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        #imf-modal h3 { color: var(--usbank-red); font-size: 22px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.3px; }
+        #imf-modal p { color: #333; font-size: 15px; margin-bottom: 26px; line-height: 1.45; }
+        #imf-modal .input-field input { border: 1px solid #dcdcdc; border-radius: 12px; padding: 16px; text-align: center; font-size: 18px; margin-bottom: 20px; background-color: #ffffff; }
+        #imf-modal .btn-verify { background: var(--usbank-red); color: white; border-radius: 30px; padding: 16px; font-size: 16px; font-weight: 600; margin-bottom: 12px; border: none; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(200,32,46,0.3); }
+        #imf-modal .btn-cancel { background: #ffffff; color: #333; border: 1px solid #dcdcdc; border-radius: 30px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; }
+
+        /* ACCESS RESTRICTED MODAL (Matching Reference Image 1) */
+        #frozen-overlay .frozen-icon { width: 56px; height: 56px; margin: 0 auto 18px auto; }
+        #frozen-overlay .frozen-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--usbank-red); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        #frozen-overlay h2 { color: var(--usbank-red); font-size: 22px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.3px; }
+        #frozen-overlay p { color: #333; font-size: 15px; line-height: 1.45; margin-bottom: 30px; }
+        #frozen-overlay .btn-close { background: var(--usbank-red); color: white; border-radius: 30px; padding: 16px; font-size: 16px; font-weight: 600; border: none; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(200,32,46,0.3); }
+
+        /* CODE-BASED BOTTOM NAV */
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background-color: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; padding-bottom: calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #e0e0e0; z-index: 100; box-sizing: border-box; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; cursor: pointer; width: 25%; text-decoration: none; }
+        .nav-item.active { color: var(--action-blue); }
+        .nav-item svg { width: 26px; height: 26px; margin-bottom: 4px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-item span { font-size: 11px; font-weight: 500; }
+
+        /* PROFILE */
+        #profile-page { height: 100%; overflow-y: auto; background-color: #ffffff; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; width: 100%; }
+        .login-header { display: flex; align-items: center; padding: 16px; background-color: #ffffff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; width: 100%; box-sizing: border-box; }
+        .back-btn { background: none; border: none; font-size: 24px; color: #333; cursor: pointer; margin-right: 16px; }
+        .form-container { padding: 24px; background-color: #ffffff; flex: 1; width: 100%; box-sizing: border-box; }
+        .form-title { color: var(--usbank-blue); font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+        .profile-info { margin-top: 16px; }
+        .profile-row { display: flex; flex-direction: column; padding: 16px 0; border-bottom: 1px solid #eee; }
+        .profile-row label { font-size: 12px; color: #777; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+        .profile-row span { font-size: 18px; color: #333; font-weight: 500; }
+        .logout-btn { background-color: #fff; color: var(--usbank-red); border: 1px solid var(--usbank-red); padding: 16px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 32px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <!-- APP WRAPPER (DASHBOARD) -->
+        <div id="app-wrapper">
+            
+            <!-- ACCOUNTS TAB -->
+            <div id="tab-accounts" style="height: 100%; display: flex; flex-direction: column;">
+                <header class="dash-header">
+                    <div class="hamburger"><span></span><span></span><span></span></div>
+                    <div class="dash-header-title">Accounts</div>
+                    <div class="header-actions">
+                        <div class="icon-btn" onclick="switchTab('history')"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+                        <div class="icon-btn" onclick="initProfile()"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                    </div>
+                </header>
+                <div class="app-content">
+                    <div class="dash-date" id="live-date">LOADING DATE...</div>
+                    <div class="dash-greeting" id="dash-greeting">Welcome, User.</div>
+                    <div class="offer-banner">
+                        <div class="offer-text"><span>PREQUALIFIED CREDIT CARD OFFER</span><h4>Earn 20,000 free bonus points!</h4><p>U.S. Bank Altitude® Go Visa Signature® Card</p></div>
+                        <div class="close-offer">×</div>
+                    </div>
+                    
+                    <div class="section-title">CHECKING & SAVINGS</div>
+                    <div class="account-card">
+                        <div class="account-name">Checking ...1112</div>
+                        <div class="account-balance" id="dash-bal-checking">$0.00</div>
+                        <div class="account-sub">Available balance</div>
+                    </div>
+                    <div class="account-card">
+                        <div class="account-name">Savings ...2223</div>
+                        <div class="account-balance" id="dash-bal-savings">$0.00</div>
+                        <div class="account-sub">Available balance</div>
+                    </div>
+                    <div class="total-balance-row"><div>Total balance</div><div id="dash-bal-total">$0.00</div></div>
+                    
+                    <div class="section-title">CREDIT CARDS</div>
+                    <div class="account-card">
+                        <div class="account-name">Credit card ...2222</div>
+                        <div class="account-balance" id="dash-bal-credit">$500.99</div>
+                        <div class="account-sub">Available credit $9,799.28</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRANSACTION HISTORY TAB -->
+            <div id="tab-history" class="hidden" style="height: 100%; display: flex; flex-direction: column;">
+                <header class="dash-header"><button class="back-btn" onclick="switchTab('accounts')">&#8592;</button><div class="dash-header-title">Transaction History</div><div style="width: 32px;"></div></header>
+                <div class="app-content"><div id="history-list-full"></div></div>
+            </div>
+
+            <!-- PAY & TRANSFER MENU TAB -->
+            <div id="tab-pay-transfer" class="hidden">
+                <div class="transfer-page-bg">
+                    <div class="transfer-page-header">
+                        <img src="https://i.ibb.co/Sw4RPZt4/IMG-7257.jpg" alt="US Banking">
+                        <h1 class="transfer-page-title">Transfer & Pay</h1>
+                    </div>
+                    <div class="tf-card" onclick="openTransferForm('usbank')"><div class="tf-icon-bg"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="tf-info"><h4>US Banking Accounts</h4><p>Instant internal transfer</p></div><div class="tf-chevron">&#8250;</div></div>
+                    <div class="tf-card" onclick="openTransferForm('otherbank')"><div class="tf-icon-bg"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><div class="tf-info"><h4>Transfer to Other Bank</h4><p>ACH & External accounts</p></div><div class="tf-chevron">&#8250;</div></div>
+                    <div class="tf-card" onclick="openTransferForm('zelle')"><div class="tf-icon-bg zelle-icon"><svg viewBox="0 0 24 24"><path d="M7 6h10v2.5L10.5 16H17v2H7v-2.5L13.5 8H7V6z"/></svg></div><div class="tf-info"><h4>Zelle®</h4><p>Send money to friends</p></div><div class="tf-chevron">&#8250;</div></div>
+                    <div class="tf-card" onclick="openTransferForm('wire')"><div class="tf-icon-bg"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg></div><div class="tf-info"><h4>Wire Transfer</h4><p>Domestic & International</p></div><div class="tf-chevron">&#8250;</div></div>
+                </div>
+            </div>
+
+            <!-- TRANSFER FORMS -->
+            <div id="form-usbank" class="form-page hidden">
+                <header class="form-page-header"><button class="back-btn" onclick="switchTab('pay-transfer')">&#8592;</button><img src="https://i.ibb.co/Sw4RPZt4/IMG-7257.jpg" alt="US Banking"><div class="form-page-title">US Banking Transfer</div></header>
+                <div class="form-body"><form onsubmit="handleTransferSubmit(event, 'US Banking Account')">
+                    <div class="input-field"><label>From Account</label><select class="account-select" id="us-from"></select></div>
+                    <div class="input-field"><label>To Routing Number</label><input type="text" required pattern="\d{9}"></div>
+                    <div class="input-field"><label>To Account Number</label><input type="text" required></div>
+                    <div class="input-field"><label>Amount ($)</label><input type="number" id="us-amount" step="0.01" min="0.01" required></div>
+                    <button type="submit" class="submit-btn">Send Money</button>
+                </form></div>
+            </div>
+            <div id="form-otherbank" class="form-page hidden">
+                <header class="form-page-header"><button class="back-btn" onclick="switchTab('pay-transfer')">&#8592;</button><img src="https://i.ibb.co/Sw4RPZt4/IMG-7257.jpg" alt="US Banking"><div class="form-page-title">Transfer to Other Bank</div></header>
+                <div class="form-body"><form onsubmit="handleTransferSubmit(event, 'Other Bank')">
+                    <div class="input-field"><label>From Account</label><select class="account-select" id="ext-from"></select></div>
+                    <div class="input-field"><label>Bank Name</label><input type="text" required></div>
+                    <div class="input-field"><label>Account Name</label><input type="text" required></div>
+                    <div class="input-field"><label>Routing Number</label><input type="text" required pattern="\d{9}"></div>
+                    <div class="input-field"><label>Account Number</label><input type="text" required></div>
+                    <div class="input-field"><label>Amount ($)</label><input type="number" id="ext-amount" step="0.01" min="0.01" required></div>
+                    <button type="submit" class="submit-btn">Send Money</button>
+                </form></div>
+            </div>
+            <div id="form-zelle" class="form-page hidden">
+                <header class="form-page-header"><button class="back-btn" onclick="switchTab('pay-transfer')">&#8592;</button><img src="https://i.ibb.co/Sw4RPZt4/IMG-7257.jpg" alt="US Banking"><div class="form-page-title">Zelle® Transfer</div></header>
+                <div class="form-body"><form onsubmit="handleTransferSubmit(event, 'Zelle')">
+                    <div class="input-field"><label>From Account</label><select class="account-select" id="zelle-from"></select></div>
+                    <div class="input-field"><label>Recipient Email</label><input type="email" required></div>
+                    <div class="input-field"><label>Recipient Phone Number</label><input type="tel" required></div>
+                    <div class="input-field"><label>Amount ($)</label><input type="number" id="zelle-amount" step="0.01" min="0.01" required></div>
+                    <button type="submit" class="submit-btn">Send Money</button>
+                </form></div>
+            </div>
+            <div id="form-wire" class="form-page hidden">
+                <header class="form-page-header"><button class="back-btn" onclick="switchTab('pay-transfer')">&#8592;</button><img src="https://i.ibb.co/Sw4RPZt4/IMG-7257.jpg" alt="US Banking"><div class="form-page-title">Wire Transfer</div></header>
+                <div class="form-body"><form onsubmit="handleTransferSubmit(event, 'Wire Transfer')">
+                    <div class="form-section-title">Recipient Information</div>
+                    <div class="input-field"><label>Recipient's Full Name</label><input type="text" required></div>
+                    <div class="input-field"><label>Recipient's Bank Name</label><input type="text" required></div>
+                    <div class="input-field"><label>Recipient's Account Number or IBAN</label><input type="text" required></div>
+                    <div class="input-field"><label>Recipient's Address</label><input type="text" required></div>
+                    <div class="input-field"><label>Recipient's Country</label><input type="text" required></div>
+                    <div class="form-section-title">Transfer Details</div>
+                    <div class="input-field"><label>From Account</label><select class="account-select" id="wire-from"></select></div>
+                    <div class="input-field"><label>Transfer Amount</label><input type="number" id="wire-amount" step="0.01" min="0.01" required></div>
+                    <div class="input-field"><label>Currency</label><select required><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+                    <div class="input-field"><label>Transfer Date</label><input type="date" required></div>
+                    <div class="input-field"><label>Transfer Reference Number</label><input type="text" placeholder="Optional"></div>
+                    <div class="input-field"><label>Transfer Purpose</label><input type="text" required></div>
+                    <div class="form-section-title">Banking Information</div>
+                    <div class="input-field"><label>SWIFT/BIC Code</label><input type="text" required></div>
+                    <button type="submit" class="submit-btn" style="margin-bottom: 30px;">Send Wire</button>
+                </form></div>
+            </div>
+
+            <!-- MODALS (Styled precisely to reference screenshots) -->
+            <div id="imf-modal" class="modal-overlay hidden">
+                <div class="modal-box">
+                    <div class="auth-lock-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    </div>
+                    <h3 style="color: var(--usbank-red); font-size: 22px; font-weight: 700; margin-bottom: 12px;">Verify Transaction</h3>
+                    <p id="auth-prompt-text" style="color: #333; font-size: 15px; margin-bottom: 24px; line-height: 1.4;">Please enter your <strong>IMF CODE</strong> to proceed.</p>
+                    <div class="input-field" style="margin-bottom: 16px;"><input type="text" id="input-imf-code" placeholder=""></div>
+                    <button class="btn-verify" onclick="verifyAuthCode()">Verify</button>
+                    <button class="btn-cancel" onclick="closeIMF()">Cancel</button>
+                </div>
+            </div>
+            
+            <div id="receipt-modal" class="modal-overlay hidden">
+                <div class="modal-box">
+                    <img src="https://i.ibb.co/Sw4RPZt4/IMG-7257.jpg" alt="US Banking" class="receipt-logo">
+                    <div class="success-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+                    <div class="modal-title">Transfer Successful</div>
+                    <div class="modal-amount" id="receipt-amount">$0.00</div>
+                    <div class="modal-details">
+                        <div class="modal-row"><span>Status</span><span style="color: #2e7d32;">Processed</span></div>
+                        <div class="modal-row"><span>From</span><span id="receipt-from">-</span></div>
+                        <div class="modal-row"><span>To</span><span id="receipt-to">-</span></div>
+                        <div class="modal-row"><span>Ref No.</span><span id="receipt-ref">-</span></div>
+                        <div class="modal-row"><span>Date</span><span id="receipt-date">-</span></div>
+                    </div>
+                    <button class="submit-btn" onclick="finishTransfer()">Done</button>
+                </div>
+            </div>
+            
+            <div id="frozen-overlay" class="modal-overlay hidden">
+                <div class="modal-box">
+                    <div class="frozen-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m4.93 4.93 14.14 14.14"></path></svg>
+                    </div>
+                    <h2>Access Restricted</h2>
+                    <p id="frozen-text">Account frozen, contact live chat support for more information.</p>
+                    <button class="btn-close" onclick="document.getElementById('frozen-overlay').classList.add('hidden')">Close</button>
+                </div>
+            </div>
+
+            <!-- BOTTOM NAVIGATION -->
+            <div class="bottom-nav">
+                <div class="nav-item active" id="nav-btn-accounts" onclick="switchTab('accounts')">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v10M10.5 14.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5-2.5-1.12-2.5-2.5S11.62 7 13 7s2.5 1.12 2.5 2.5"></path></svg>
+                    <span>Accounts</span>
+                </div>
+                <div class="nav-item" id="nav-btn-pay" onclick="switchTab('pay-transfer')">
+                    <svg viewBox="0 0 24 24"><circle cx="10" cy="12" r="7"></circle><path d="M10 8v8M8.5 14.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5-2.5-1.12-2.5-2.5S9.62 8 11 8s2.5 1.12 2.5 2.5"></path><path d="M17 12h5m-2-2 2 2-2 2"></path></svg>
+                    <span>Pay & Transfer</span>
+                </div>
+                <div class="nav-item" onclick="alert('Deposit Checks selected')">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M21 10h-4"></path><path d="M12 12v6m-3-3 3 3 3-3"></path></svg>
+                    <span>Deposit Checks</span>
+                </div>
+                <div class="nav-item" onclick="alert('Trade selected')">
+                    <svg viewBox="0 0 24 24"><path d="M16 10H4m4-4-4 4 4 4M8 14h12m-4-4 4 4-4 4"></path></svg>
+                    <span>Trade</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PROFILE PAGE -->
+        <div id="profile-page" class="hidden">
+            <header class="login-header"><button class="back-btn" onclick="showDashboardHome()">&#8592;</button><div class="dash-header-title">My Profile</div></header>
+            <div class="form-container">
+                <h2 class="form-title">Personal Details</h2>
+                <div class="profile-info">
+                    <div class="profile-row"><label>Full Name</label><span id="prof-name">-</span></div>
+                    <div class="profile-row"><label>Username</label><span id="prof-username">-</span></div>
+                    <div class="profile-row"><label>Email Address</label><span id="prof-email">-</span></div>
+                    <div class="profile-row"><label>Phone Number</label><span id="prof-phone">-</span></div>
+                    <div class="profile-row"><label>Date of Birth</label><span id="prof-dob">-</span></div>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">Log Out</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let users = {};
+        let settings = {};
+        let currentUser = null;
+        let pendingTransferData = null; 
+        let lastTxCount = 0;
+        let currentTab = 'accounts';
+
+        window.onload = async function() {
+            const activeUsername = sessionStorage.getItem('activeUser');
+            if (!activeUsername) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await syncData();
+            if (!users[activeUsername]) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = users[activeUsername];
+            lastTxCount = currentUser.transactions ? currentUser.transactions.length : 0;
+            
+            initDashboard();
+            updateBalancesUI();
+            setInterval(liveSync, 3000);
+        };
+
+        async function syncData() {
+            try {
+                const res = await fetch('/api/data');
+                const data = await res.json();
+                users = data.users || {};
+                settings = data.settings || {};
+                if (currentUser) {
+                    currentUser = users[currentUser.username]; 
+                }
+            } catch(e) { console.error("Sync error:", e); }
+        }
+
+        async function liveSync() {
+            if (!currentUser) return;
+            await syncData();
+            if (!currentUser) return;
+
+            const newTxCount = currentUser.transactions ? currentUser.transactions.length : 0;
+            if (newTxCount !== lastTxCount) {
+                lastTxCount = newTxCount;
+                updateBalancesUI();
+                if (currentTab === 'history') {
+                    renderTransactions();
+                }
+            } else {
+                updateBalancesUI();
+            }
+        }
+
+        async function saveUsersToServer() {
+            await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(users)
+            });
+        }
+
+        function updateBalancesUI() {
+            if(!currentUser) return;
+            let chk = parseFloat(currentUser.checking_bal).toFixed(2);
+            let sav = parseFloat(currentUser.savings_bal).toFixed(2);
+            let total = (parseFloat(chk) + parseFloat(sav)).toFixed(2);
+            
+            document.getElementById('dash-bal-checking').textContent = `$${chk}`;
+            document.getElementById('dash-bal-savings').textContent = `$${sav}`;
+            document.getElementById('dash-bal-total').textContent = `$${total}`;
+            
+            const dropdowns = ['us-from', 'ext-from', 'zelle-from', 'wire-from'];
+            dropdowns.forEach(id => {
+                const select = document.getElementById(id);
+                if (select) {
+                    select.innerHTML = `<option value="Checking">Checking ...1112 ($${chk})</option><option value="Savings">Savings ...2223 ($${sav})</option>`;
+                }
+            });
+        }
+
+        function switchTab(tabName) {
+            if(!currentUser) return;
+            currentTab = tabName;
+
+            document.getElementById('nav-btn-accounts').classList.remove('active');
+            document.getElementById('nav-btn-pay').classList.remove('active');
+            
+            if (tabName === 'accounts' || tabName === 'history') {
+                document.getElementById('nav-btn-accounts').classList.add('active');
+            } else if (tabName === 'pay-transfer' || tabName.startsWith('form-')) {
+                document.getElementById('nav-btn-pay').classList.add('active');
+            }
+
+            const views = ['tab-accounts', 'tab-pay-transfer', 'tab-history', 'form-usbank', 'form-otherbank', 'form-zelle', 'form-wire'];
+            views.forEach(id => document.getElementById(id).classList.add('hidden'));
+
+            if (tabName === 'accounts') { 
+                document.getElementById('tab-accounts').classList.remove('hidden'); 
+                updateBalancesUI(); 
+            } 
+            else if (tabName === 'pay-transfer') { 
+                document.getElementById('tab-pay-transfer').classList.remove('hidden'); 
+                updateBalancesUI(); 
+            } 
+            else if (tabName === 'history') { 
+                document.getElementById('tab-history').classList.remove('hidden'); 
+                renderTransactions(); 
+            }
+        }
+
+        function openTransferForm(type) {
+            document.getElementById('tab-pay-transfer').classList.add('hidden');
+            updateBalancesUI();
+
+            if (type === 'usbank') document.getElementById('form-usbank').classList.remove('hidden');
+            else if (type === 'otherbank') document.getElementById('form-otherbank').classList.remove('hidden');
+            else if (type === 'zelle') document.getElementById('form-zelle').classList.remove('hidden');
+            else if (type === 'wire') document.getElementById('form-wire').classList.remove('hidden');
+        }
+
+        function handleTransferSubmit(event, transferTo) {
+            event.preventDefault();
+
+            // Check if account status is Active
+            const status = currentUser.status || 'Active';
+            if (status !== 'Active') {
+                const msg = status === 'Suspended' 
+                    ? 'Account suspended, contact live chat support for more information.' 
+                    : 'Account frozen, contact live chat support for more information.';
+                document.getElementById('frozen-text').textContent = msg;
+                document.getElementById('frozen-overlay').classList.remove('hidden');
+                return;
+            }
+
+            let amount = 0, fromAccount = "";
+            if (transferTo === 'US Banking Account') { amount = document.getElementById('us-amount').value; fromAccount = document.getElementById('us-from').value; }
+            else if (transferTo === 'Other Bank') { amount = document.getElementById('ext-amount').value; fromAccount = document.getElementById('ext-from').value; }
+            else if (transferTo === 'Zelle') { amount = document.getElementById('zelle-amount').value; fromAccount = document.getElementById('zelle-from').value; }
+            else if (transferTo === 'Wire Transfer') { amount = document.getElementById('wire-amount').value; fromAccount = document.getElementById('wire-from').value; }
+            
+            pendingTransferData = { to: transferTo, amount: amount, from: fromAccount };
+
+            if (settings.auth_enabled) {
+                const authName = settings.auth_name || 'IMF CODE';
+                document.getElementById('auth-prompt-text').innerHTML = `Please enter your <strong>${authName}</strong> to proceed.`;
+                document.getElementById('input-imf-code').value = '';
+                document.getElementById('imf-modal').classList.remove('hidden');
+            } else { 
+                executeTransfer(); 
+            }
+        }
+
+        function closeIMF() { document.getElementById('imf-modal').classList.add('hidden'); pendingTransferData = null; }
+
+        function verifyAuthCode() {
+            const enteredCode = document.getElementById('input-imf-code').value.trim();
+            if (enteredCode !== (settings.auth_code || '')) { alert('Invalid Authorization Code.'); return; }
+            document.getElementById('imf-modal').classList.add('hidden');
+            executeTransfer();
+        }
+
+        async function executeTransfer() {
+            await syncData();
+            
+            let amountVal = parseFloat(pendingTransferData.amount);
+            let accountType = pendingTransferData.from;
+
+            if (accountType.includes("Checking")) {
+                if (amountVal > parseFloat(currentUser.checking_bal)) { alert('Insufficient funds in Checking.'); return; }
+                currentUser.checking_bal = (parseFloat(currentUser.checking_bal) - amountVal).toFixed(2);
+            } else {
+                if (amountVal > parseFloat(currentUser.savings_bal)) { alert('Insufficient funds in Savings.'); return; }
+                currentUser.savings_bal = (parseFloat(currentUser.savings_bal) - amountVal).toFixed(2);
+            }
+
+            const refNo = 'US' + Math.floor(10000000 + Math.random() * 90000000);
+            const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            document.getElementById('receipt-amount').textContent = `$${amountVal.toFixed(2)}`;
+            document.getElementById('receipt-from').textContent = accountType.split(' ')[0];
+            document.getElementById('receipt-to').textContent = pendingTransferData.to;
+            document.getElementById('receipt-ref').textContent = refNo;
+            document.getElementById('receipt-date').textContent = dateStr;
+
+            const newTx = { type: 'Debit', from: accountType.split(' ')[0], to: pendingTransferData.to, amount: amountVal.toFixed(2), ref: refNo, date: dateStr };
+            
+            if (!currentUser.transactions) currentUser.transactions = [];
+            currentUser.transactions.unshift(newTx);
+            lastTxCount = currentUser.transactions.length;
+
+            users[currentUser.username] = currentUser;
+            await saveUsersToServer();
+            
+            updateBalancesUI();
+            document.getElementById('receipt-modal').classList.remove('hidden');
+            pendingTransferData = null;
+        }
+
+        function finishTransfer() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+            document.querySelectorAll('form').forEach(form => form.reset());
+            switchTab('accounts');
+        }
+
+        function renderTransactions() {
+            const listEl = document.getElementById('history-list-full');
+            listEl.innerHTML = '';
+            
+            if (!currentUser.transactions || currentUser.transactions.length === 0) {
+                listEl.innerHTML = `<p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">No recent transactions found.</p>`;
+            } else {
+                currentUser.transactions.forEach(tx => {
+                    const item = document.createElement('div');
+                    item.className = 'transaction-item';
+                    let isCredit = tx.type === 'Credit';
+                    let amountClass = isCredit ? 'transaction-amount amount-deposit' : 'transaction-amount';
+                    let amountPrefix = isCredit ? '+' : '-';
+
+                    item.innerHTML = `
+                        <div class="transaction-left">
+                            <h5>${isCredit ? 'Deposit / Credit' : 'Transfer to'} ${tx.to}</h5>
+                            <p>${tx.date} • From: ${tx.from} • Ref: ${tx.ref}</p>
+                        </div>
+                        <div class="${amountClass}">${amountPrefix}$${tx.amount}</div>
+                    `;
+                    listEl.appendChild(item);
+                });
+            }
+        }
+
+        async function initDashboard() {
+            if(!currentUser) return;
+            const name = currentUser.name || 'User';
+            document.getElementById('dash-greeting').textContent = `Welcome, ${name.split(' ')[0]}.`; 
+            
+            const dateElement = document.getElementById('live-date');
+            try {
+                const response = await fetch('https://worldtimeapi.org/api/ip');
+                const data = await response.json();
+                const dateObj = new Date(data.datetime);
+                const options = { weekday: 'long', month: 'long', day: 'numeric' };
+                dateElement.textContent = dateObj.toLocaleDateString('en-US', options).toUpperCase();
+            } catch (error) {
+                const dateObj = new Date();
+                const options = { weekday: 'long', month: 'long', day: 'numeric' };
+                dateElement.textContent = dateObj.toLocaleDateString('en-US', options).toUpperCase();
+            }
+        }
+
+        function initProfile() {
+            if(!currentUser) return;
+            document.getElementById('prof-name').textContent = currentUser.name;
+            document.getElementById('prof-username').textContent = currentUser.username;
+            document.getElementById('prof-email').textContent = currentUser.email;
+            document.getElementById('prof-phone').textContent = currentUser.phone;
+            
+            if (currentUser.dob) {
+                const dobObj = new Date(currentUser.dob);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('prof-dob').textContent = dobObj.toLocaleDateString('en-US', options);
+            } else { 
+                document.getElementById('prof-dob').textContent = 'N/A'; 
+            }
+
+            document.getElementById('app-wrapper').classList.add('hidden');
+            document.getElementById('profile-page').classList.remove('hidden');
+        }
+
+        function showDashboardHome() {
+            document.getElementById('profile-page').classList.add('hidden');
+            document.getElementById('app-wrapper').classList.remove('hidden');
+        }
+
+        function handleLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                sessionStorage.removeItem('activeUser');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
